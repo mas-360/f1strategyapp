@@ -3,9 +3,9 @@ import requests
 import plotly.express as px
 
 class RaceCircuit:
-    def __init__(self, name, tire_deg_rate, pit_loss_time):
+    def __init__(self, name, tire_deg_rates, pit_loss_time):
         self.name = name
-        self.tire_deg_rate = tire_deg_rate  # Tire degradation rate per lap
+        self.tire_deg_rates = tire_deg_rates  # Dictionary of tire degradation rates per lap for different compounds
         self.pit_loss_time = pit_loss_time  # Time lost during a pit stop
 
 def fetch_race_data(season, round_num):
@@ -32,12 +32,24 @@ def main():
         # Rest of the code (linear regression, predicting lap times, etc.)
         # ...
 
-        # Create a Plotly bar chart to visualize predicted lap times
-        circuit_names = ["Monaco", "Silverstone"]
-        predicted_lap_times = [predicted_lap_time_monaco[0], predicted_lap_time_silverstone[0]]
+        # Simulate tire strategies and find the quickest one
+        strategies = {}
+        for circuit in [circuit_monaco, circuit_silverstone]:
+            strategy_times = []
+            for compound, deg_rate in circuit.tire_deg_rates.items():
+                strategy_time = analyze_strategy(circuit, laps, starting_tire_condition, num_pit_stops, deg_rate)
+                strategy_times.append((compound, strategy_time))
+            strategies[circuit.name] = min(strategy_times, key=lambda x: x[1])
 
-        fig = px.bar(x=circuit_names, y=predicted_lap_times, labels={"x": "Circuit", "y": "Predicted Lap Time (seconds)"})
+        # Create a Plotly bar chart to visualize quickest tire strategies
+        circuit_names = list(strategies.keys())
+        compound_names = [compound for compound, _ in strategies.values()]
+        times = [time for _, time in strategies.values()]
+
+        fig = px.bar(x=circuit_names, y=times, color=compound_names,
+                     labels={"x": "Circuit", "y": "Total Time (seconds)"})
         st.plotly_chart(fig)
 
 if __name__ == "__main__":
     main()
+
