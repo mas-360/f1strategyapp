@@ -14,6 +14,8 @@ def get_driver_data(driver_id, circuit_id):
     data = response.json()
     return data
 
+driver_data = get_driver_data(1, 1)
+
 # Function to create a radar chart
 def create_radar_chart(data, labels, title):
     angles = np.linspace(0, 2 * np.pi, len(labels), endpoint=False)
