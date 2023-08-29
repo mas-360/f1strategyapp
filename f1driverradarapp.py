@@ -14,8 +14,6 @@ def get_driver_data(driver_id, circuit_id):
     data = response.json()
     return data
 
-driver_data = get_driver_data(1, 1)
-
 # Function to create a radar chart
 def create_radar_chart(data, labels, title):
     angles = np.linspace(0, 2 * np.pi, len(labels), endpoint=False)
@@ -35,9 +33,13 @@ def create_radar_chart(data, labels, title):
 def main():
     st.title("F1 Driver Comparison at a Race Track")
     
+    # Get unique driver IDs and circuit IDs (replace with actual data)
+    unique_driver_ids = ["hamilton", "verstappen", "vettel"]
+    unique_circuit_ids = ["monza", "spa", "silverstone"]
+    
     # Sidebar input
-    driver_id = st.sidebar.text_input("Enter Driver ID (e.g., hamilton):")
-    circuit_id = st.sidebar.text_input("Enter Circuit ID (e.g., monza):")
+    driver_id = st.sidebar.selectbox("Select Driver ID:", unique_driver_ids)
+    circuit_id = st.sidebar.selectbox("Select Circuit ID:", unique_circuit_ids)
     
     if st.sidebar.button("Compare"):
         # Fetch data
@@ -55,5 +57,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
